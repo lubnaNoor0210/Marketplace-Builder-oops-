@@ -3,7 +3,7 @@ import json
 from ads import show_timed_ad
 import firebase_admin
 from Hadith import HadithCollection
-from firebase_admin import credentials, auth
+from firebase_admin import credentials
 from payment import PaymentProcessor
 import requests
 from datetime import datetime
