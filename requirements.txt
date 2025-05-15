@@ -1,6 +1,6 @@
 streamlit
-stripe
 firebase-admin
+stripe
 requests
-pyrebase4
 google-cloud-storage
+setuptools
