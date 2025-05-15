@@ -1,6 +1,13 @@
+# ✅ Core packages
 streamlit
-firebase-admin
 stripe
+firebase-admin
 requests
 google-cloud-storage
 setuptools
+
+# ✅ For Pyrebase (used in auth.py)
+pyrebase4
+oauth2client
+requests_toolbelt
+google-auth
