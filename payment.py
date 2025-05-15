@@ -6,7 +6,7 @@ class PaymentProcessor:
 
     def create_checkout_session(self, amount_in_dollars):
         try:
-            BASE_URL = "https://demo-quran-guide.streamlit.app" 
+            YOUR_NGROK_URL = "https://demo-quran-guide.streamlit.app"
 
             session = stripe.checkout.Session.create(
                 payment_method_types=['card'],
@@ -21,11 +21,11 @@ class PaymentProcessor:
                     'quantity': 1,
                 }],
                 mode='payment',
-                success_url=f'{BASE_URL}/?status=success',
-                cancel_url=f'{BASE_URL}/?status=cancel',
-                customer_email="test@example.com", 
-                billing_address_collection='never',
-                phone_number_collection={'enabled': False}, 
+                success_url=f'{YOUR_NGROK_URL}/?status=success',
+                cancel_url=f'{YOUR_NGROK_URL}/?status=cancel',
+                customer_email="test@example.com",
+                billing_address_collection='auto',
+                phone_number_collection={'enabled': False},
             )
             return session.url
         except Exception as e:
