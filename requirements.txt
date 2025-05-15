@@ -3,3 +3,4 @@ stripe
 firebase-admin
 requests
 pyrebase4
+google-cloud-storage
