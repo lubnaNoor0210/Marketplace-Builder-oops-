@@ -6,7 +6,7 @@ class PaymentProcessor:
 
     def create_checkout_session(self, amount_in_dollars):
         try:
-            YOUR_NGROK_URL = "https://08bf-202-47-40-205.ngrok-free.app" 
+            YOUR_NGROK_URL = "https://demo-quran-guide.streamlit.app" 
 
             session = stripe.checkout.Session.create(
                 payment_method_types=['card'],
