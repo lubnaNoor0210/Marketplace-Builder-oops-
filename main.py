@@ -14,9 +14,9 @@ from auth import AuthManager
 st.set_page_config(page_title="Quran Guide", layout="wide")
 
 if not firebase_admin._apps:
-    firebase_config = (dict(st.secrets["firebase"]))
-    cred = credentials.Certificate(firebase_config)
-    firebase_admin.initialize_app(cred,{
+    firebase_config = dict(st.secrets["firebase"])  
+    cred = credentials.Certificate(firebase_config)  
+    firebase_admin.initialize_app(cred, {
         'databaseURL': 'https://quran-guide-9b941-default-rtdb.firebaseio.com'
     })
 
