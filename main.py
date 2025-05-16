@@ -10,73 +10,97 @@ from datetime import datetime
 from calender_converter import CalendarConverter
 from emotional_quote import QuranQuoteGenerator
 from prayer_tracker import PrayerJournal
-from clock import live_clock
 from auth import AuthManager
-
+from clock import live_clock
 st.set_page_config(
     page_title="Quran Guide",
     layout="wide"
 )
-
 if not firebase_admin._apps:
-    firebase_config = dict(st.secrets["firebase"])
+    firebase_config =  dict(st.secrets["firebase"])
     cred = credentials.Certificate(firebase_config)
     firebase_admin.initialize_app(cred, {
         'databaseURL': 'https://quran-guide-9b941-default-rtdb.firebaseio.com'
     })
-
 query_params = st.query_params
-if query_params.get("status") == "success":
-    st.success("✅ Payment Successful! Thank you for your support.")
-elif query_params.get("status") == "cancel":
-    st.warning("❌ Payment was cancelled.")
-
+tab_param = query_params.get("tab")
+status = query_params.get("status")
 firebase_token = query_params.get("token")
+uid_from_url = query_params.get("uid")
 
-if firebase_token and not st.session_state.get("token_processed"):
+# Restore login
+if firebase_token and "user" not in st.session_state:
     try:
         decoded_token = auth.verify_id_token(firebase_token)
         email = decoded_token.get("email", "")
-        
-        st.session_state["user"] = {
-            "email": email,
-            "name": decoded_token.get("name", ""),
-            "localId": decoded_token.get("uid", ""),
-            "idToken": firebase_token
-        }
-        st.session_state["token_processed"] = True
-        st.success(f"✅ Logged in as {email}")
-        st.experimental_set_query_params()
+        firebase_uid = decoded_token.get("uid", "")
+
+        if uid_from_url != firebase_uid:
+            st.warning("⚠️ UID mismatch. Login session not restored.")
+        else:
+            st.session_state["user"] = {
+                "email": email,
+                "name": decoded_token.get("name", ""),
+                "localId": firebase_uid,
+                "idToken": firebase_token
+            }
+            st.session_state["redirect_message"] = "✅ Payment Successful! Welcome back."
+            st.session_state["redirect_tab"] = "donate"
+    except Exception as e:
+        st.error("❌ Invalid or expired login token.")
+
+firebase_token = query_params.get("token")
+uid_from_url = query_params.get("uid")
+
+if firebase_token and "user" not in st.session_state:
+    try:
+        decoded_token = auth.verify_id_token(firebase_token)
+        email = decoded_token.get("email", "")
+        firebase_uid = decoded_token.get("uid", "")
+
+        if uid_from_url != firebase_uid:
+            st.warning("⚠️ UID mismatch. Login session not restored.")
+        else:
+            st.session_state["user"] = {
+                "email": email,
+                "name": decoded_token.get("name", ""),
+                "localId": firebase_uid,
+                "idToken": firebase_token  
+            }
+            st.success(f"✅ Logged in again as {email} after payment!")
 
     except Exception as e:
         st.error("❌ Invalid or expired login token.")
-        st.stop()
+
+if "redirect_tab" in st.session_state:
+    st.markdown(f"<script>window.location.hash = '🔐 Login';</script>", unsafe_allow_html=True)
+    del st.session_state["redirect_tab"]
 
 auth_manager = AuthManager()
-st.markdown("""
-    <style>
-        .stApp {
-            background: linear-gradient(to bottom, #FFF8E1, #C9EBCB);
+st.markdown(
+    """
+     <style>
+        .stApp{
+            background: linear-gradient(to bottom, #FFF8E1, #C9EBCB); 
             height: 100vh;
             margin: 0;
-            padding: 0;
+            padding: 0;}
+            .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         section[data-testid="stSidebar"] {
         background: linear-gradient(to bottom, #C9EBCB, #FFF8E1);
         padding: 20px;
     }
-        .center {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
         .quote-box {
-            background-color: #F1F1F1;
+            background-color: #F1F1F1;  
             border: 6px solid  #D56B6B;
             padding: 15px;
             border-radius: 5px;
             color: #000000;
-            font-size: 22px;
+            font-size: 22px; 
         }
         .prayer-box {
             background-color: #F1F1F1;
@@ -86,16 +110,18 @@ st.markdown("""
             margin: 5px 0;
             font-size: 18px;
         }
-        .convertor-box {
+         .convertor-box {
             background-color: #F1F1F1;
             border: 6px solid  #D56B6B;
             padding: 15px;
             border-radius: 5px;
             color: #000000;
-            font-size: 22px;
+            font-size: 22px; 
         }
     </style>
-""", unsafe_allow_html=True)
+    """,
+    unsafe_allow_html=True
+)
 
 @st.cache_data
 def fetch_surah_list():
@@ -129,13 +155,17 @@ st.markdown("""
     </style>
     <div class="main-title"> Quran Guide</div>
 """, unsafe_allow_html=True)
+
 col1, col2, col3 = st.columns([1, 5, 1])
 with col2:
-    tab_labels= ["Home","☪️Salah Time🕜", "📖 Quote Generator", "📅 Calendar Converter", "📔 Journal", "Asma-Ul-Husna🌟", "Surah Translation", "Hadees", "🔐 Login / Signup", "Donate"]
+    tab_labels= ["Home","☪️Salah Time🕜","📖 Quote Generator", "📅 Calendar Converter", "📔 Journal", "Asma-Ul-Husna🌟", "Surah Translation", "📃Hadith","🔐 Login / Signup", "🫶Donate"]
+    default_tab_index = 0
+    if st.session_state.get("redirect_tab") == "donate":
+     default_tab_index = 9
     tab_blocks = st.tabs(tab_labels)
+
 with tab_blocks[0]:
     st.subheader("🕒 Live Clock")
-    st_autorefresh(interval=60000, key="clock_refresh")
     live_clock()
 
 with tab_blocks[1]:
@@ -247,42 +277,60 @@ with tab_blocks[6]:
 
 with tab_blocks[7]:
     st.subheader("📜 Hadith Collection")
-    show_timed_ad("Hadees")
+    show_timed_ad("Hadith")
 
     collection = HadithCollection()
+
     book_labels = {
         "Sahih Bukhari": "sahih_bukhari",
         "Sahih Muslim": "sahih_muslim",
-        "Jami at Tirmidhi": "Jami at Tirmidhi"
+        "Jami at Tirmidhi": "Jami at Tirmidhi"  
     }
 
     book_name = st.selectbox("Select Hadith Book", list(book_labels.keys()))
     book_key = book_labels[book_name]
+
     hadiths = collection.get_hadiths_by_book(book_key)
     hadith_numbers = [h["number"] for h in hadiths]
+
     selected_number = st.selectbox("Select Hadith Number", hadith_numbers)
 
     if st.button("📥 Get Hadith"):
         hadith = collection.get_hadith_by_number(book_key, selected_number)
+
         if hadith:
             st.markdown(f"### 📘 {book_name} - {hadith['number']}")
-            st.markdown(f"📜 {hadith['text']}")
+            st.markdown(f"""<div class="convertor-box">📜 {hadith['text']}</div>""", unsafe_allow_html=True)
+            
         else:
             st.error("❌ Hadith not found.")
 
-with tab_blocks[8]:
-    auth_manager.render_auth_tab()
+    
+with tab_blocks[8]: 
+     auth_manager.render_auth_tab()
 
 with tab_blocks[9]:
     st.subheader("💝 Support Our Quran Guide App")
+
+    if "redirect_message" in st.session_state:
+        st.success(st.session_state["redirect_message"])
+        del st.session_state["redirect_message"]
+
+    if "redirect_tab" in st.session_state:
+        del st.session_state["redirect_tab"]
+
     amount = st.slider("Select donation amount ($)", 1, 100, 10)
+
     if st.button("Donate Now"):
-        processor = PaymentProcessor(st.secrets["stripe"]["secret_key"])
+        stripe_key = st.secrets["stripe"]["secret_key"]
+        processor = PaymentProcessor(stripe_key)
         checkout_url = processor.create_checkout_session(amount)
+
         if checkout_url:
-            st.markdown(f"[👉 Click here to complete payment]({checkout_url})", unsafe_allow_html=True)
+             st.markdown(f"""<a href="{checkout_url}" target="_self">👉 Click here to complete payment</a>""", unsafe_allow_html=True)
         else:
             st.error("❌ Failed to create Stripe Checkout session. Check terminal for error.")
+
 
 st.sidebar.title("👤 Account")
 if "user" in st.session_state:
