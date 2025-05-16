@@ -34,7 +34,7 @@ def live_clock():
     font-family: 'Trebuchet MS', sans-serif;
 }
         .card3d {
-            background: #e0e0e0;
+            background: #e8f5e9;
             border-radius: 20px;
             box-shadow: 8px 8px 15px #bebebe, -8px -8px 15px #ffffff;
             padding: 25px;
