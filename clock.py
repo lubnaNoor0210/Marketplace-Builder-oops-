@@ -1,7 +1,8 @@
-# app.py
 import streamlit as st
 from datetime import datetime
 import requests
+from streamlit_autorefresh import st_autorefresh
+st_autorefresh(interval=60000, key="clock_refresh")
 
 def live_clock():
     now = datetime.now()
@@ -10,23 +11,16 @@ def live_clock():
 
     hijri_date = "Hijri date unavailable"
     try:
-        url = f"https://api.aladhan.com/v1/gToH?date={now.day}-{now.month}-{now.year}"
-        res = requests.get(url)
-        if res.status_code == 200:
-            hijri = res.json()["data"]["hijri"]
-            hijri_day = hijri["day"]
-            hijri_month = hijri["month"]["en"]
-            hijri_year = hijri["year"]
-            hijri_weekday = hijri["weekday"]["en"]
-            hijri_date = f"{hijri_weekday}, {hijri_day} {hijri_month} {hijri_year}"
+        response = requests.get(f"https://api.aladhan.com/v1/gToH?date={now.day}-{now.month}-{now.year}")
+        if response.status_code == 200:
+            data = response.json()["data"]["hijri"]
+            hijri_date = f"{data['weekday']['en']}, {data['day']} {data['month']['en']} {data['year']}"
     except:
         pass
 
-    # Auto-refresh workaround using Streamlit rerun button (manual)
-    st.info("This page refreshes manually. To see current time, click the 'Refresh Clock' button below.")
-
-    # Display results
-    st.subheader("🕒 Current Time")
+    st.info("Page refreshes manually. Click below to update time.")
+    
+    st.subheader("🕒 Time")
     st.write(time_str)
 
     st.subheader("📅 Gregorian Date")
@@ -35,6 +29,5 @@ def live_clock():
     st.subheader("🕌 Hijri Date")
     st.write(hijri_date)
 
-    # Manual refresh button
     if st.button("🔄 Refresh Clock"):
         st.rerun()
