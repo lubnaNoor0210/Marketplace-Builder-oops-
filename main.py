@@ -162,7 +162,7 @@ tab_labels= ["Home","☪️Salah Time🕜", "📖 Quote Generator", "📅 Calend
 tab_blocks = st.tabs(tab_labels)
 with tab_blocks[0]:
     st.subheader("🕒 Live Clock")
-    st.write("✅ Clock inline test is working")
+    live_clock()
 
 with tab_blocks[1]:
     st.subheader("Today's Prayer Times")
