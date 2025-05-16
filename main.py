@@ -38,12 +38,6 @@ if firebase_token and not st.session_state.get("token_processed"):
         decoded_token = auth.verify_id_token(firebase_token)
         email = decoded_token.get("email", "")
 
-        try:
-            auth.get_user_by_email(email)
-        except firebase_admin.auth.UserNotFoundError:
-            st.warning("🚫 This account is not registered. Please sign up first.")
-            st.stop()
-
         st.session_state["user"] = {
             "email": email,
             "name": decoded_token.get("name", ""),
