@@ -8,3 +8,4 @@ pyrebase4
 oauth2client
 requests_toolbelt
 google-auth
+streamlit-autorefresh
