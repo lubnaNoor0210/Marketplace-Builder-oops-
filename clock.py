@@ -5,14 +5,12 @@ import pytz
 from streamlit_autorefresh import st_autorefresh
 
 def live_clock():
+    # Optional: auto refresh every 60 seconds
     st_autorefresh(interval=60000, key="clock_refresh")
 
-    # Timezone-aware datetime for Pakistan
-    pakistan_tz = pytz.timezone('Asia/Karachi')
-    now = datetime.now(pakistan_tz)
-
+    # Time in Pakistan timezone
+    now = datetime.now(pytz.timezone("Asia/Karachi"))
     time_str = now.strftime("%I:%M %p")
-    gregorian_date = now.strftime("%A, %d %B %Y")
 
     hijri_date = "Hijri date unavailable"
     try:
@@ -20,48 +18,12 @@ def live_clock():
         if response.status_code == 200:
             data = response.json()["data"]["hijri"]
             hijri_date = f"{data['day']} {data['month']['en']} {data['year']}"
-    except:
-        pass
+    except Exception as e:
+        hijri_date = f"Error: {e}"
 
-    # Custom 3D-style CSS
-    st.markdown("""
-        <style>
-        .clock-card {
-            background: linear-gradient(145deg, #f0f0f0, #cacaca);
-            border-radius: 20px;
-            box-shadow: 8px 8px 15px #bebebe, -8px -8px 15px #ffffff;
-            padding: 25px;
-            text-align: center;
-            font-family: 'Courier New', monospace;
-            margin: 20px 0;
-        }
-        .clock-time {
-            font-size: 48px;
-            color: #2C5364;
-            font-weight: bold;
-        }
-        .clock-label {
-            font-size: 18px;
-            color: #444;
-            margin-bottom: 5px;
-        }
-        </style>
-    """, unsafe_allow_html=True)
+    # Just show values, no headers
+    st.write(time_str)
+    st.write(hijri_date)
 
-    # Display 3D boxes
-    st.markdown(f"""
-        <div class="clock-card">
-            <div class="clock-label">🕒 Current Time</div>
-            <div class="clock-time">{time_str}</div>
-        </div>
-        <div class="clock-card">
-            <div class="clock-label">📅 Gregorian Date</div>
-            <div class="clock-time">{gregorian_date}</div>
-        </div>
-        <div class="clock-card">
-            <div class="clock-label">🕌 Hijri Date</div>
-            <div class="clock-time">{hijri_date}</div>
-        </div>
-    """, unsafe_allow_html=True)
-
-    st.button("🔄 Refresh Clock", on_click=st.rerun)
+    # Optional refresh button
+    st.button("🔄 Refresh", on_click=st.rerun)
