@@ -118,7 +118,20 @@ def format_time(time_str):
     time_obj = datetime.strptime(time_str, "%H:%M")
     return time_obj.strftime("%I:%M %p")
 
-st.markdown("<div class='center'><h1>🕌 Quran-Guide</h1></div>", unsafe_allow_html=True)
+st.markdown("""
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet">
+    <style>
+    .main-title {
+        text-align: center;
+        font-family: 'Playfair Display', serif;
+        font-size: 60px;
+        color: black;
+        margin-top: 30px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    }
+    </style>
+    <div class="main-title"> Quran Guide</div>
+""", unsafe_allow_html=True)
 col1, col2, col3 = st.columns([1, 5, 1])
 with col2:
     tab_labels= ["Home","☪️Salah Time🕜", "📖 Quote Generator", "📅 Calendar Converter", "📔 Journal", "Asma-Ul-Husna🌟", "Surah Translation", "Hadees", "🔐 Login / Signup", "Donate"]
