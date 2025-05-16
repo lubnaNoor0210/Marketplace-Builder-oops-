@@ -54,13 +54,10 @@ if firebase_token and "user" not in st.session_state:
     except Exception as e:
         st.error("❌ Invalid or expired login token.")
 
-if "redirect_tab" in st.session_state:
-    if not already_redirected:
-        new_url = st.query_params.copy()
-        new_url["redirected"] = "1"
-        redirect_url = st.experimental_get_url().split("?")[0] + "?" + "&".join([f"{k}={v}" for k, v in new_url.items()])
-        st.markdown(f"<meta http-equiv='refresh' content='0; URL={redirect_url}' />", unsafe_allow_html=True)
+if "redirect_tab" in st.session_state and not already_redirected:
+    st.markdown(f"<script>window.location.href = window.location.href + '&redirected=1';</script>", unsafe_allow_html=True)
     del st.session_state["redirect_tab"]
+
 
 auth_manager = AuthManager()
 st.markdown("""
