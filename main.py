@@ -37,7 +37,7 @@ if firebase_token and not st.session_state.get("token_processed"):
     try:
         decoded_token = auth.verify_id_token(firebase_token)
         email = decoded_token.get("email", "")
-
+        
         st.session_state["user"] = {
             "email": email,
             "name": decoded_token.get("name", ""),
@@ -46,12 +46,11 @@ if firebase_token and not st.session_state.get("token_processed"):
         }
         st.session_state["token_processed"] = True
         st.success(f"✅ Logged in as {email}")
-
-        # ✅ Clear URL token to stop redirect loop
         st.experimental_set_query_params()
 
     except Exception as e:
         st.error("❌ Invalid or expired login token.")
+        st.stop()
 
 # firebase_token = query_params.get("token")
 
