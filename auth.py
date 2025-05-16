@@ -14,7 +14,7 @@ class AuthManager:
         }
         self.firebase = pyrebase.initialize_app(self.firebaseConfig)
         self.auth = self.firebase.auth()
-        self.oauth_login_url = "https://preeminent-marigold-b1bae0.netlify.app?next=https://quran-guide.streamlit.app"
+        self.oauth_login_url = "https://preeminent-marigold-b1bae0.netlify.app?next=https://demo-quran-guide.streamlit.app"
 
     def login(self):
         st.subheader("🔐 Email Login")
