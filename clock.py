@@ -4,7 +4,7 @@ from datetime import datetime
 from streamlit_autorefresh import st_autorefresh
 
 def live_clock():
-    st_autorefresh(interval=1000, key="clock_refresh")
+    st_autorefresh(interval=60000, key="clock_refresh")
 
     now = datetime.now()
     time_str = now.strftime("%H:%M:%S")
