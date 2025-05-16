@@ -135,6 +135,7 @@ with col2:
     tab_blocks = st.tabs(tab_labels)
 with tab_blocks[0]:
     st.subheader("🕒 Live Clock")
+    st_autorefresh(interval=60000, key="clock_refresh")
     live_clock()
 
 with tab_blocks[1]:
