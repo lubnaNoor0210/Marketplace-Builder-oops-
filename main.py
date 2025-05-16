@@ -163,7 +163,7 @@ with col2:
     tab_blocks = st.tabs(tab_labels)
 with tab_blocks[0]:
     st.subheader("🕒 Live Clock")
-    live_clock()
+    st.write("✅ Clock inline test is working")
 
 with tab_blocks[1]:
     st.subheader("Today's Prayer Times")
