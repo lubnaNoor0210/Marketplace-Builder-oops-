@@ -163,19 +163,7 @@ with col2:
     tab_blocks = st.tabs(tab_labels)
 with tab_blocks[0]:
     st.subheader("🕒 Live Clock")
-    st.markdown("""
-        <div id="live-clock" style="font-size: 36px; font-weight: bold; text-align: center; margin-top: 20px;"></div>
-        <script>
-            function updateClock() {
-                const now = new Date();
-                const time = now.toLocaleTimeString();
-                const date = now.toDateString();
-                document.getElementById("live-clock").innerHTML = time + " | " + date;
-            }
-            setInterval(updateClock, 1000);
-            updateClock();
-        </script>
-    """, unsafe_allow_html=True)
+    live_clock()
 
 with tab_blocks[1]:
     st.subheader("Today's Prayer Times")
