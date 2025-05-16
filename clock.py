@@ -21,17 +21,17 @@ def live_clock():
 
     st.markdown("""
         <style>
-        .holographic-title {
+        .emerald-title {
             font-size: 32px;
             text-align: center;
             margin-top: 20px;
             margin-bottom: 30px;
             font-weight: bold;
-            background: linear-gradient(90deg, #ff9a9e, #fad0c4, #fad0c4, #fbc2eb, #a18cd1);
+            background: linear-gradient(90deg, #004d40, #00695c, #2e7d32);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-            font-family: 'Trebuchet MS', sans-serif;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            font-family: 'Georgia', serif;
         }
         .card3d {
             background: #e0e0e0;
