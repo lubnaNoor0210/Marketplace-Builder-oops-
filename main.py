@@ -157,10 +157,9 @@ st.markdown("""
     </style>
     <div class="main-title"> Quran Guide</div>
 """, unsafe_allow_html=True)
-col1, col2, col3 = st.columns([1, 5, 1])
-with col2:
-    tab_labels= ["Home","☪️Salah Time🕜", "📖 Quote Generator", "📅 Calendar Converter", "📔 Journal", "Asma-Ul-Husna🌟", "Surah Translation", "Hadees", "🔐 Login / Signup", "Donate"]
-    tab_blocks = st.tabs(tab_labels)
+
+tab_labels= ["Home","☪️Salah Time🕜", "📖 Quote Generator", "📅 Calendar Converter", "📔 Journal", "Asma-Ul-Husna🌟", "Surah Translation", "Hadees", "🔐 Login / Signup", "Donate"]
+tab_blocks = st.tabs(tab_labels)
 with tab_blocks[0]:
     st.subheader("🕒 Live Clock")
     st.write("✅ Clock inline test is working")
