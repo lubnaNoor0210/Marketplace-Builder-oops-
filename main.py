@@ -33,7 +33,8 @@ elif query_params.get("status") == "cancel":
 
 firebase_token = query_params.get("token")
 
-if firebase_token and "user" not in st.session_state:
+# Only process login token once
+if firebase_token and not st.session_state.get("token_processed"):
     try:
         decoded_token = auth.verify_id_token(firebase_token)
         email = decoded_token.get("email", "")
@@ -47,12 +48,37 @@ if firebase_token and "user" not in st.session_state:
         st.session_state["user"] = {
             "email": email,
             "name": decoded_token.get("name", ""),
-            "localId": decoded_token.get("uid", "")
+            "localId": decoded_token.get("uid", ""),
+            "idToken": firebase_token
         }
+        st.session_state["token_processed"] = True  # ✅ prevents future reprocessing
         st.success(f"✅ Logged in as {email}")
 
     except Exception as e:
         st.error("❌ Invalid or expired login token.")
+
+# firebase_token = query_params.get("token")
+
+# if firebase_token and "user" not in st.session_state:
+#     try:
+#         decoded_token = auth.verify_id_token(firebase_token)
+#         email = decoded_token.get("email", "")
+
+#         try:
+#             auth.get_user_by_email(email)
+#         except firebase_admin.auth.UserNotFoundError:
+#             st.warning("🚫 This account is not registered. Please sign up first.")
+#             st.stop()
+
+#         st.session_state["user"] = {
+#             "email": email,
+#             "name": decoded_token.get("name", ""),
+#             "localId": decoded_token.get("uid", "")
+#         }
+#         st.success(f"✅ Logged in as {email}")
+
+#     except Exception as e:
+#         st.error("❌ Invalid or expired login token.")
 
 # if "redirect_tab" in st.session_state and not already_redirected:
 #     st.markdown(f"<script>window.location.href = window.location.href + '&redirected=1';</script>", unsafe_allow_html=True)
