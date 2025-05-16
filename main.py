@@ -17,67 +17,100 @@ st.set_page_config(
     page_title="Quran Guide",
     layout="wide"
 )
-
 if not firebase_admin._apps:
-    firebase_config = dict(st.secrets["firebase"])
+    firebase_config =  dict(st.secrets["firebase"])
     cred = credentials.Certificate(firebase_config)
     firebase_admin.initialize_app(cred, {
         'databaseURL': 'https://quran-guide-9b941-default-rtdb.firebaseio.com'
     })
-
 query_params = st.query_params
-if query_params.get("status") == "success":
-    st.success("✅ Payment Successful! Thank you for your support.")
-elif query_params.get("status") == "cancel":
-    st.warning("❌ Payment was cancelled.")
-
+tab_param = query_params.get("tab")
+status = query_params.get("status")
 firebase_token = query_params.get("token")
+uid_from_url = query_params.get("uid")
 
-if firebase_token and not st.session_state.get("token_processed"):
+# Restore login
+if firebase_token and "user" not in st.session_state:
     try:
         decoded_token = auth.verify_id_token(firebase_token)
         email = decoded_token.get("email", "")
-        
-        st.session_state["user"] = {
-            "email": email,
-            "name": decoded_token.get("name", ""),
-            "localId": decoded_token.get("uid", ""),
-            "idToken": firebase_token
-        }
-        st.session_state["token_processed"] = True
-        st.success(f"✅ Logged in as {email}")
-        st.experimental_set_query_params()
+        firebase_uid = decoded_token.get("uid", "")
+
+        if uid_from_url != firebase_uid:
+            st.warning("⚠️ UID mismatch. Login session not restored.")
+        else:
+            st.session_state["user"] = {
+                "email": email,
+                "name": decoded_token.get("name", ""),
+                "localId": firebase_uid,
+                "idToken": firebase_token
+            }
+            st.session_state["redirect_message"] = "✅ Payment Successful! Welcome back."
+            st.session_state["redirect_tab"] = "donate"
+    except Exception as e:
+        st.error("❌ Invalid or expired login token.")
+
+firebase_token = query_params.get("token")
+uid_from_url = query_params.get("uid")
+
+if firebase_token and "user" not in st.session_state:
+    try:
+        decoded_token = auth.verify_id_token(firebase_token)
+        email = decoded_token.get("email", "")
+        firebase_uid = decoded_token.get("uid", "")
+
+        if uid_from_url != firebase_uid:
+            st.warning("⚠️ UID mismatch. Login session not restored.")
+        else:
+            st.session_state["user"] = {
+                "email": email,
+                "name": decoded_token.get("name", ""),
+                "localId": firebase_uid,
+                "idToken": firebase_token  
+            }
+            st.success(f"✅ Logged in again as {email} after payment!")
 
     except Exception as e:
         st.error("❌ Invalid or expired login token.")
-        st.stop()
+
+if "redirect_tab" in st.session_state:
+    st.markdown(f"<script>window.location.hash = '🔐 Login';</script>", unsafe_allow_html=True)
+    del st.session_state["redirect_tab"]
+
+
+# if not firebase_admin._apps:
+#     firebase_config = dict(st.secrets["firebase"])
+#     cred = credentials.Certificate(firebase_config)
+#     firebase_admin.initialize_app(cred, {
+#         'databaseURL': 'https://quran-guide-9b941-default-rtdb.firebaseio.com'
+#     })
+
+# query_params = st.query_params
+# if query_params.get("status") == "success":
+#     st.success("✅ Payment Successful! Thank you for your support.")
+# elif query_params.get("status") == "cancel":
+#     st.warning("❌ Payment was cancelled.")
 
 # firebase_token = query_params.get("token")
 
-# if firebase_token and "user" not in st.session_state:
+# if firebase_token and not st.session_state.get("token_processed"):
 #     try:
 #         decoded_token = auth.verify_id_token(firebase_token)
 #         email = decoded_token.get("email", "")
-
-#         try:
-#             auth.get_user_by_email(email)
-#         except firebase_admin.auth.UserNotFoundError:
-#             st.warning("🚫 This account is not registered. Please sign up first.")
-#             st.stop()
-
+        
 #         st.session_state["user"] = {
 #             "email": email,
 #             "name": decoded_token.get("name", ""),
-#             "localId": decoded_token.get("uid", "")
+#             "localId": decoded_token.get("uid", ""),
+#             "idToken": firebase_token
 #         }
+#         st.session_state["token_processed"] = True
 #         st.success(f"✅ Logged in as {email}")
+#         st.experimental_set_query_params()
 
 #     except Exception as e:
 #         st.error("❌ Invalid or expired login token.")
-
-# if "redirect_tab" in st.session_state and not already_redirected:
-#     st.markdown(f"<script>window.location.href = window.location.href + '&redirected=1';</script>", unsafe_allow_html=True)
-#     del st.session_state["redirect_tab"]
+#         st.stop()
 
 
 auth_manager = AuthManager()
