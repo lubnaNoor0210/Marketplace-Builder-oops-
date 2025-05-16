@@ -279,7 +279,7 @@ with tab_blocks[7]:
 with tab_blocks[8]:
     auth_manager.render_auth_tab()
 
-with tab_blocks[8]:
+with tab_blocks[9]:
     st.subheader("💝 Support Our Quran Guide App")
     amount = st.slider("Select donation amount ($)", 1, 100, 10)
     if st.button("Donate Now"):
