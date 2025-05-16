@@ -2,9 +2,10 @@ import streamlit as st
 from datetime import datetime
 import requests
 from streamlit_autorefresh import st_autorefresh
-st_autorefresh(interval=60000, key="clock_refresh")
 
 def live_clock():
+    st_autorefresh(interval=60000, key="clock_refresh")
+
     now = datetime.now()
     time_str = now.strftime("%I:%M %p")
     gregorian_date = now.strftime("%A, %d %B %Y")
