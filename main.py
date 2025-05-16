@@ -78,41 +78,6 @@ if "redirect_tab" in st.session_state:
     del st.session_state["redirect_tab"]
 
 
-# if not firebase_admin._apps:
-#     firebase_config = dict(st.secrets["firebase"])
-#     cred = credentials.Certificate(firebase_config)
-#     firebase_admin.initialize_app(cred, {
-#         'databaseURL': 'https://quran-guide-9b941-default-rtdb.firebaseio.com'
-#     })
-
-# query_params = st.query_params
-# if query_params.get("status") == "success":
-#     st.success("✅ Payment Successful! Thank you for your support.")
-# elif query_params.get("status") == "cancel":
-#     st.warning("❌ Payment was cancelled.")
-
-# firebase_token = query_params.get("token")
-
-# if firebase_token and not st.session_state.get("token_processed"):
-#     try:
-#         decoded_token = auth.verify_id_token(firebase_token)
-#         email = decoded_token.get("email", "")
-        
-#         st.session_state["user"] = {
-#             "email": email,
-#             "name": decoded_token.get("name", ""),
-#             "localId": decoded_token.get("uid", ""),
-#             "idToken": firebase_token
-#         }
-#         st.session_state["token_processed"] = True
-#         st.success(f"✅ Logged in as {email}")
-#         st.experimental_set_query_params()
-
-#     except Exception as e:
-#         st.error("❌ Invalid or expired login token.")
-#         st.stop()
-
-
 auth_manager = AuthManager()
 st.markdown("""
     <style>
