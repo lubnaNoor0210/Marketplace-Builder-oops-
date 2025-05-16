@@ -7,7 +7,7 @@ class PaymentProcessor:
 
     def create_checkout_session(self, amount_in_dollars):
         try:
-            YOUR_NGROK_URL = "https://demo-quran-guide.streamlit.app" 
+            YOUR_NGROK_URL = "https://demo-quran-guide.streamlit.app"
             user = st.session_state.get("user", {})
             id_token = user.get("idToken")
             user_id = user.get("localId")
