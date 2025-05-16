@@ -59,11 +59,15 @@ auth_manager = AuthManager()
 st.markdown("""
     <style>
         .stApp {
-            background: linear-gradient(to bottom, #F1F1F1, #D97A48);
+            background: linear-gradient(to bottom, #FFF8E1, #C9EBCB);
             height: 100vh;
             margin: 0;
             padding: 0;
         }
+        section[data-testid="stSidebar"] {
+        background: linear-gradient(to bottom, #C9EBCB, #FFF8E1);
+        padding: 20px;
+    }
         .center {
             display: flex;
             justify-content: center;
