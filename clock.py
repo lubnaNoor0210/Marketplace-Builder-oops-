@@ -1,39 +1,40 @@
+# app.py
 import streamlit as st
 from datetime import datetime
 import requests
 
 def live_clock():
     now = datetime.now()
-    time_str = now.strftime("%I:%M %p")  # Hour:Minute AM/PM
+    time_str = now.strftime("%I:%M %p")
     gregorian_date = now.strftime("%A, %d %B %Y")
 
-    # Fetch Hijri date using Aladhan API
-    hijri_date = "Fetching Hijri date..."
+    hijri_date = "Hijri date unavailable"
     try:
-        response = requests.get(f"https://api.aladhan.com/v1/gToH?date={now.day}-{now.month}-{now.year}")
-        if response.status_code == 200:
-            hijri_date = response.json()["data"]["hijri"]["date"]
-        else:
-            hijri_date = "Hijri date unavailable"
+        url = f"https://api.aladhan.com/v1/gToH?date={now.day}-{now.month}-{now.year}"
+        res = requests.get(url)
+        if res.status_code == 200:
+            hijri = res.json()["data"]["hijri"]
+            hijri_day = hijri["day"]
+            hijri_month = hijri["month"]["en"]
+            hijri_year = hijri["year"]
+            hijri_weekday = hijri["weekday"]["en"]
+            hijri_date = f"{hijri_weekday}, {hijri_day} {hijri_month} {hijri_year}"
     except:
-        hijri_date = "Hijri date unavailable"
+        pass
 
-    # Auto-refresh every 60 seconds
-    st.markdown("<meta http-equiv='refresh' content='60'>", unsafe_allow_html=True)
+    # Auto-refresh workaround using Streamlit rerun button (manual)
+    st.info("This page refreshes manually. To see current time, click the 'Refresh Clock' button below.")
 
-    # Styled output
-    st.markdown(f"""
-        <div style='
-            background-color: #ffffff;
-            border: 2px solid #C9EBCB;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            font-family: Courier, monospace;
-            box-shadow: 2px 2px 10px rgba(0,0,0,0.1);'>
+    # Display results
+    st.subheader("🕒 Current Time")
+    st.write(time_str)
 
-            <div style='font-size: 38px; color: #2C5364;'>🕒 {time_str}</div>
-            <div style='font-size: 20px; margin-top: 10px;'>📅 {gregorian_date}</div>
-            <div style='font-size: 18px; margin-top: 5px;'>🕌 Hijri: {hijri_date}</div>
-        </div>
-    """, unsafe_allow_html=True)
+    st.subheader("📅 Gregorian Date")
+    st.write(gregorian_date)
+
+    st.subheader("🕌 Hijri Date")
+    st.write(hijri_date)
+
+    # Manual refresh button
+    if st.button("🔄 Refresh Clock"):
+        st.rerun()
