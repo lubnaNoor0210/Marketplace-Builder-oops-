@@ -13,7 +13,10 @@ from prayer_tracker import PrayerJournal
 from clock import live_clock
 from auth import AuthManager
 
-st.set_page_config(page_title="Quran Guide", layout="wide")
+st.set_page_config(
+    page_title="Quran Guide",
+    layout="wide"
+)
 
 if not firebase_admin._apps:
     firebase_config = dict(st.secrets["firebase"])
