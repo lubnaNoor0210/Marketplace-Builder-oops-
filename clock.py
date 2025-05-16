@@ -3,6 +3,7 @@ import streamlit as st
 from datetime import datetime
 from streamlit_autorefresh import st_autorefresh
 
+
 def live_clock():
     st_autorefresh(interval=60000, key="clock_refresh")
 
