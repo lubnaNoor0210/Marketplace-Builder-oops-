@@ -161,7 +161,6 @@ st.markdown("""
 tab_labels= ["Home","☪️Salah Time🕜", "📖 Quote Generator", "📅 Calendar Converter", "📔 Journal", "Asma-Ul-Husna🌟", "Surah Translation", "Hadees", "🔐 Login / Signup", "Donate"]
 tab_blocks = st.tabs(tab_labels)
 with tab_blocks[0]:
-    st.subheader("🕒 Live Clock")
     live_clock()
 
 with tab_blocks[1]:
