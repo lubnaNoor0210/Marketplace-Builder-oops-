@@ -1,17 +1,13 @@
-
 import streamlit as st
 from datetime import datetime
-from streamlit_autorefresh import st_autorefresh
-
 
 def live_clock():
-    st_autorefresh(interval=60000, key="clock_refresh")
-
     now = datetime.now()
-    time_str = now.strftime("%H:%M:%S")
+    time_str = now.strftime("%I:%M:%S %p")
     date_str = now.strftime("%A, %d %B %Y")
 
     st.markdown("""
+        <meta http-equiv="refresh" content="10">
         <style>
         .clock-box {
             background: linear-gradient(145deg, #f5f0da, #e8dfc4);
